@@ -13,6 +13,16 @@ This project builds on the [SVGDreamer](https://github.com/) pipeline and introd
 * An **inference-time optimization loop** using VPSD, guided by the hybrid reward
 * A set of **ablation studies** exploring iteration count and reward weight trade-offs
 
+## 🧩 Results
+<img width="742" alt="Screenshot 2025-06-03 at 12 44 45 PM" src="https://github.com/user-attachments/assets/dffde8bf-1fec-4bf5-aeed-eb3ac57a5ba1" />
+
+<img width="741" alt="Screenshot 2025-06-03 at 12 45 10 PM" src="https://github.com/user-attachments/assets/d7a748a1-4447-4478-a54a-a87f6a75b6f1" />
+
+<img width="824" alt="Screenshot 2025-06-03 at 12 45 29 PM" src="https://github.com/user-attachments/assets/563ccf16-c2ea-49e5-a016-8621daa03db0" />
+
+<img width="739" alt="Screenshot 2025-06-03 at 12 45 41 PM" src="https://github.com/user-attachments/assets/0e346ecb-4e1a-43a8-b61a-397508a7cd01" />
+
+
 ## 📁 Repository Structure
 
 ```
