@@ -1,0 +1,13 @@
+- x=iconography
+- skip_sive=False
+- prompt='A black-and-white butterfly contour outline line illustration, created by
+  tracing the butterflys outlines. The lines should be crisp, continuous, and uniform
+  in width, with no background or extraneous detail. A tactile graphic is a graphic
+  felt by touch and should outline only the key features of the butterfly such as
+  the antennae or wings. Patterns on the wings should only emphasize key details.'
+- neg_prompt='text, extra, missing, unfinished, watermark, signature, username, scan,
+  frame, complex, detailed, color,intricate'
+- result_path=./logs/butterfly_baseline
+- seed=70
+- multirun=False
+- diffuser.download=True

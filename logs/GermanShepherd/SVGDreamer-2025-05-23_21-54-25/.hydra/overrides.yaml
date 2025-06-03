@@ -1,0 +1,6 @@
+- x=iconography
+- prompt='A colorful German shepherd in vector art. tending on artstation.'
+- result_path=./logs/GermanShepherd
+- seed=26226
+- multirun=False
+- diffuser.download=True

@@ -1,0 +1,713 @@
+==> system args: 
+{'prompt': 'A black-and-white butterfly contour outline line graphic like a coloring book, created by tracing the outlines. The lines should be continuous, and uniform in width. There should be no background and no extraneous detail. Patterns on the wings should only emphasize key details.', 'token_ind': 1, 'neg_prompt': 'text, extra, missing, unfinished, watermark, signature, username, scan, frame, complex, detailed, color,intricate', 'skip_sive': False, 'state': {'cpu': False, 'mprec': 'fp16'}, 'diffuser': {'download': True, 'force_download': False, 'resume_download': False}, 'diffvg': {'print_timing': False}, 'seed': 262, 'multirun': False, 'srange': None, 'result_path': './logs/tactile_reward_sd21b_5000', 'save_step': 50, 'mv': False, 'framefreq': 5, 'framerate': 24, 'output_dir': '/workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40'}
+==> yaml config args: 
+{'image_size': 600, 'path_svg': None, 'color_init': 'rand', 'style': 'tactile', 'sive_model_cfg': {'model_id': 'sd21b', 'ldm_speed_up': False, 'enable_xformers': True, 'gradient_checkpoint': False, 'cpu_offload': True, 'num_inference_steps': 100, 'guidance_scale': 7.5, 'lora_path': None}, 'sive_stage_optim': {'point': 1, 'width': 0.1, 'color': 0.01, 'bg': 0.01, 'optim': {'name': 'adam', 'betas': [0.9, 0.9], 'eps': 1e-06}, 'schedule': {'name': 'linear', 'keep_ratio': 0.2, 'decay_ratio': 0.4}}, 'sive': {'attn_cfg': {'cross_attn_res': 16, 'self_attn_res': 32, 'max_com': 20, 'mean_comp': False, 'comp_idx': 0, 'attn_coeff': 1.0}, 'mask_tau': 0.3, 'bg': {'style': 'iconography', 'num_iter': 100, 'num_paths': 256, 'path_schedule': 'repeat', 'schedule_each': 128, 'width': 3, 'num_segments': 4, 'segment_init': 'random', 'radius': 5, 'coord_init': 'random', 'grid': 20, 'lr_schedule': True, 'optim_bg': False, 'use_attn_init': True, 'softmax_tau': 0.3, 'use_distance_weighted_loss': False, 'xing_loss_weight': 0.001}, 'fg': {'style': 'iconography', 'num_iter': 50, 'num_paths': 256, 'path_schedule': 'repeat', 'schedule_each': 128, 'width': 6, 'num_segments': 4, 'segment_init': 'random', 'radius': 5, 'coord_init': 'random', 'grid': 20, 'lr_schedule': False, 'optim_bg': False, 'use_attn_init': True, 'softmax_tau': 0.3, 'use_distance_weighted_loss': False, 'xing_loss_weight': 0.01}, 'tog': {'reinit': False, 'num_iter': 10}}, 'num_paths': 512, 'trainable_bg': False, 'width': 6, 'num_segments': 4, 'segment_init': 'circle', 'radius': 5, 'coord_init': 'random', 'grid': 30, 'path_reinit': {'use': True, 'freq': 100, 'stop_step': 1000, 'opacity_threshold': 0.05, 'area_threshold': 64}, 'vpsd_stage_optim': {'point': 1, 'width': 0.1, 'color': 0.01, 'bg': 0.01, 'lr_schedule': True, 'optim': {'name': 'adam', 'betas': [0.9, 0.9], 'eps': 1e-06}, 'schedule': {'name': 'cosine', 'warmup_steps': 10, 'warmup_start_lr': 0.02, 'warmup_end_lr': 0.9, 'cosine_end_lr': 0.4}}, 'vpsd_model_cfg': {'model_id': 'sd21b', 'ldm_speed_up': False, 'enable_xformers': True, 'gradient_checkpoint': False, 'cpu_offload': True, 'num_inference_steps': 100, 'guidance_scale': 7.5, 'lora_path': None}, 'vpsd': {'use': True, 'type': 'vpsd', 'n_particle': 6, 'vsd_n_particle': 4, 'particle_aug': False, 'num_iter': 5000, 'guidance_scale': 9.5, 'grad_scale': 1.0, 'grad_clip_val': None, 't_range': [0.02, 0.98], 't_schedule': 'max_0.5_1000', 'phi_single': False, 'phi_model': 'lora', 'use_attn_scale': '${x.vpsd.phi_single}', 'lora_attn_scale': 1.0, 'phi_guidance_scale': 1.0, 'phi_t': False, 'phi_update_step': 1, 'phi_lr': 0.0001, 'phi_scheduler': 'ddim', 'phi_n_particle': 2, 'phi_ReFL': True, 'n_phi_sample': 1, 'phi_sample_step': 200, 'phi_infer_step': 50, 'phi_optim': {'name': 'adamw', 'betas': [0.9, 0.999], 'eps': 1e-08, 'weight_decay': None}, 'phi_schedule': {'use': True, 'name': 'cosine', 'warmup_steps': 50, 'warmup_start_lr': 1e-05, 'warmup_end_lr': 0.0001, 'total_step': 800, 'cosine_end_lr': 0.0001}}, 'reward_path': './checkpoint/ImageReward', 'use_tactile_reward': True, 'xing_loss': {'use': False, 'weight': 0.01}}
+
+***** Model State *****
+-> Mixed Precision: fp16
+-> Weight dtype:  torch.float16
+-> Working Space: '/workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40/sd262-sive-tactile-P512-RePath'
+Process 0 using device: cuda
+-> state initialization complete 
+
+prompt: A black-and-white butterfly contour outline line graphic like a coloring book, created by tracing the outlines. The lines should be continuous, and uniform in width. There should be no background and no extraneous detail. Patterns on the wings should only emphasize key details.
+neg_prompt: text, extra, missing, unfinished, watermark, signature, username, scan, frame, complex, detailed, color,intricate
+
+load diffusers pipeline: stabilityai/stable-diffusion-2-1-base
+=> enable xformers
+DDIMScheduler {
+  "_class_name": "DDIMScheduler",
+  "_diffusers_version": "0.20.2",
+  "beta_end": 0.012,
+  "beta_schedule": "scaled_linear",
+  "beta_start": 0.00085,
+  "clip_sample": false,
+  "clip_sample_range": 1.0,
+  "dynamic_thresholding_ratio": 0.995,
+  "num_train_timesteps": 1000,
+  "prediction_type": "epsilon",
+  "rescale_betas_zero_snr": false,
+  "sample_max_value": 1.0,
+  "set_alpha_to_one": false,
+  "skip_prk_steps": true,
+  "steps_offset": 1,
+  "thresholding": false,
+  "timestep_spacing": "leading",
+  "trained_betas": null
+}
+
+Processing particle 0 (successful so far: 0/6)
+
+LDM attn-map logging:
+the length of tokens is 59, select 1-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40/sd262-sive-tactile-P512-RePath/select_sample_0.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 1 Rendering End...
+
+Processing particle 1 (successful so far: 1/6)
+
+LDM attn-map logging:
+the length of tokens is 59, select 1-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40/sd262-sive-tactile-P512-RePath/select_sample_1.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 2 Rendering End...
+
+Processing particle 2 (successful so far: 2/6)
+
+LDM attn-map logging:
+the length of tokens is 59, select 1-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40/sd262-sive-tactile-P512-RePath/select_sample_2.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 3 Rendering End...
+
+Processing particle 3 (successful so far: 3/6)
+
+LDM attn-map logging:
+the length of tokens is 59, select 1-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40/sd262-sive-tactile-P512-RePath/select_sample_3.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 4 Rendering End...
+
+Processing particle 4 (successful so far: 4/6)
+
+LDM attn-map logging:
+the length of tokens is 59, select 1-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40/sd262-sive-tactile-P512-RePath/select_sample_4.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 5 Rendering End...
+
+Processing particle 5 (successful so far: 5/6)
+
+LDM attn-map logging:
+the length of tokens is 59, select 1-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40/sd262-sive-tactile-P512-RePath/select_sample_5.png
+-> Background rendering: 
+path_schedule: [128, 128]
+Background rendering failed for particle 5, trying next particle
+Processing particle 6 (successful so far: 5/6)
+
+LDM attn-map logging:
+the length of tokens is 59, select 1-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40/sd262-sive-tactile-P512-RePath/select_sample_6.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 7 Rendering End...
+
+SVG fine-tuning via VPSD...
+load diffusers pipeline: stabilityai/stable-diffusion-2-1-base
+=> enable xformers
+DDIMScheduler {
+  "_class_name": "DDIMScheduler",
+  "_diffusers_version": "0.20.2",
+  "beta_end": 0.012,
+  "beta_schedule": "scaled_linear",
+  "beta_start": 0.00085,
+  "clip_sample": false,
+  "clip_sample_range": 1.0,
+  "dynamic_thresholding_ratio": 0.995,
+  "num_train_timesteps": 1000,
+  "prediction_type": "epsilon",
+  "rescale_betas_zero_snr": false,
+  "sample_max_value": 1.0,
+  "set_alpha_to_one": false,
+  "skip_prk_steps": true,
+  "steps_offset": 1,
+  "thresholding": false,
+  "timestep_spacing": "leading",
+  "trained_betas": null
+}
+
+load diffusers UNet: stabilityai/stable-diffusion-2-1-base
+=> enable xformers
+n_particles: 6, enhance_particles: False, n_particles of score: 4, n_particles of phi_model: 2, 
+t_range: [0.02, 0.98], t_schedule: max_0.5_1000, 
+guidance_scale: 9.5, phi_guidance_scale: 1.0.
+phi_model: lora, use lora_cross_attn: False, lora_attn_scale: 1.0. 
+
+-> load ImageReward model from checkpoint/ImageReward/ImageReward.pt
+-> load ImageReward med_config from checkpoint/ImageReward/med_config.json
+Successfully loaded ImageReward model from ./checkpoint/ImageReward
+Using TactileReward model for reward feedback learning
+-> init svg from `/workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40/sd262-sive-tactile-P512-RePath/SIVE_render_final_1.svg` ...
+-> init svg from `/workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40/sd262-sive-tactile-P512-RePath/SIVE_render_final_2.svg` ...
+-> init svg from `/workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40/sd262-sive-tactile-P512-RePath/SIVE_render_final_3.svg` ...
+-> init svg from `/workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40/sd262-sive-tactile-P512-RePath/SIVE_render_final_4.svg` ...
+-> init svg from `/workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40/sd262-sive-tactile-P512-RePath/SIVE_render_final_5.svg` ...
+-> init svg from `/workspace/logs/tactile_reward_sd21b_5000/SVGDreamer-2025-05-31_04-47-40/sd262-sive-tactile-P512-RePath/SIVE_render_final_7.svg` ...
+-> Painter point Params: 512
+-> Painter color Params: 0
+-> Painter width Params: 512
+Total Optimization Steps: 5000
+DEBUG: base_reward=1.1237516403198242, type=<class 'float'>
+DEBUG: tactile_metrics=0.4511335790157318, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=0.9219662547111511, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=0.9219662547111511, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(0.9220, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=0.9219662547111511, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=0.9219662547111511, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=0.9219662547111511, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.0244293212890625, requires_grad=False
+DEBUG VPSD: final_loss=0.02252301014959812, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.02252197265625, requires_grad=True
+DEBUG Pipeline: L_reward=0.02252197265625, type=<class 'torch.Tensor'>, requires_grad=True
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P0 - Step 100 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P1 - Step 100 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P2 - Step 100 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P3 - Step 100 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P4 - Step 100 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P5 - Step 100 Reinitializing Paths End ------------------------------
+
+DEBUG: base_reward=1.6103609800338745, type=<class 'float'>
+DEBUG: tactile_metrics=0.47227272391319275, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.2689344882965088, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.2689344882965088, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.2689, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.2689344882965088, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.2689344882965088, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.2689344882965088, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.08941650390625, requires_grad=False
+DEBUG VPSD: final_loss=0.11346368491649628, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.11346435546875, requires_grad=True
+DEBUG Pipeline: L_reward=0.11346435546875, type=<class 'torch.Tensor'>, requires_grad=True
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P0 - Step 200 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P1 - Step 200 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P2 - Step 200 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P3 - Step 200 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P4 - Step 200 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P5 - Step 200 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P0 - Step 300 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P1 - Step 300 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P2 - Step 300 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P3 - Step 300 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P4 - Step 300 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P5 - Step 300 Reinitializing Paths End ------------------------------
+
+DEBUG: base_reward=1.390141248703003, type=<class 'float'>
+DEBUG: tactile_metrics=0.4849439859390259, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.118582010269165, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.118582010269165, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.1186, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.118582010269165, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.118582010269165, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.118582010269165, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.01531982421875, requires_grad=False
+DEBUG VPSD: final_loss=0.017136480659246445, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.0171356201171875, requires_grad=True
+DEBUG Pipeline: L_reward=0.0171356201171875, type=<class 'torch.Tensor'>, requires_grad=True
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P0 - Step 400 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P1 - Step 400 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P2 - Step 400 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P3 - Step 400 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P4 - Step 400 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P5 - Step 400 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P0 - Step 500 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P1 - Step 500 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P2 - Step 500 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P3 - Step 500 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P4 - Step 500 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P5 - Step 500 Reinitializing Paths End ------------------------------
+
+DEBUG: base_reward=1.3923113346099854, type=<class 'float'>
+DEBUG: tactile_metrics=0.5007722973823547, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.124849557876587, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.124849557876587, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.1248, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.124849557876587, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.124849557876587, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.124849557876587, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.025543212890625, requires_grad=False
+DEBUG VPSD: final_loss=0.02873227186501026, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.0287322998046875, requires_grad=True
+DEBUG Pipeline: L_reward=0.0287322998046875, type=<class 'torch.Tensor'>, requires_grad=True
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P0 - Step 600 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P1 - Step 600 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P2 - Step 600 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P3 - Step 600 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P4 - Step 600 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P5 - Step 600 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P0 - Step 700 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P1 - Step 700 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P2 - Step 700 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P3 - Step 700 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P4 - Step 700 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P5 - Step 700 Reinitializing Paths End ------------------------------
+
+DEBUG: base_reward=0.8407523036003113, type=<class 'float'>
+DEBUG: tactile_metrics=0.45472967624664307, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=0.7249455451965332, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=0.7249455451965332, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(0.7249, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=0.7249455451965332, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=0.7249455451965332, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=0.7249455451965332, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.2310791015625, requires_grad=False
+DEBUG VPSD: final_loss=0.16751976311206818, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.16748046875, requires_grad=True
+DEBUG Pipeline: L_reward=0.16748046875, type=<class 'torch.Tensor'>, requires_grad=True
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P0 - Step 800 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P1 - Step 800 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P2 - Step 800 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P3 - Step 800 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P4 - Step 800 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P5 - Step 800 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P0 - Step 900 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P1 - Step 900 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P2 - Step 900 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P3 - Step 900 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P4 - Step 900 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 1.0, mean: 1.0, max: 1.0
+------------------------------ P5 - Step 900 Reinitializing Paths End ------------------------------
+
+DEBUG: base_reward=1.6008135080337524, type=<class 'float'>
+DEBUG: tactile_metrics=0.4820421636104584, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.2651821374893188, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.2651821374893188, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.2652, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.2651821374893188, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.2651821374893188, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.2651821374893188, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.20849609375, requires_grad=False
+DEBUG VPSD: final_loss=0.26378554105758667, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.263671875, requires_grad=True
+DEBUG Pipeline: L_reward=0.263671875, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.2667161226272583, type=<class 'float'>
+DEBUG: tactile_metrics=0.44176697731018066, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.0192313194274902, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.0192313194274902, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.0192, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.0192313194274902, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.0192313194274902, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.0192313194274902, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.219970703125, requires_grad=False
+DEBUG VPSD: final_loss=0.2242010235786438, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.2242431640625, requires_grad=True
+DEBUG Pipeline: L_reward=0.2242431640625, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.5182430744171143, type=<class 'float'>
+DEBUG: tactile_metrics=0.4736509621143341, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.2048654556274414, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.2048654556274414, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.2049, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.2048654556274414, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.2048654556274414, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.2048654556274414, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.162109375, requires_grad=False
+DEBUG VPSD: final_loss=0.1953199803829193, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.1953125, requires_grad=True
+DEBUG Pipeline: L_reward=0.1953125, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.6633973121643066, type=<class 'float'>
+DEBUG: tactile_metrics=0.490246057510376, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.3114519119262695, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.3114519119262695, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.3115, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.3114519119262695, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.3114519119262695, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.3114519119262695, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.0231170654296875, requires_grad=False
+DEBUG VPSD: final_loss=0.030316919088363647, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.0303192138671875, requires_grad=True
+DEBUG Pipeline: L_reward=0.0303192138671875, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.218959093093872, type=<class 'float'>
+DEBUG: tactile_metrics=0.4605085849761963, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=0.9914239645004272, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=0.9914239645004272, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(0.9914, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=0.9914239645004272, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=0.9914239645004272, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=0.9914239645004272, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.12457275390625, requires_grad=False
+DEBUG VPSD: final_loss=0.12350441515445709, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.12347412109375, requires_grad=True
+DEBUG Pipeline: L_reward=0.12347412109375, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.3224283456802368, type=<class 'float'>
+DEBUG: tactile_metrics=0.48998284339904785, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.0726946592330933, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.0726946592330933, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.0727, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.0726946592330933, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.0726946592330933, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.0726946592330933, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.07232666015625, requires_grad=False
+DEBUG VPSD: final_loss=0.07758442312479019, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.07757568359375, requires_grad=True
+DEBUG Pipeline: L_reward=0.07757568359375, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.291408658027649, type=<class 'float'>
+DEBUG: tactile_metrics=0.44366514682769775, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.0370855331420898, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.0370855331420898, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.0371, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.0370855331420898, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.0370855331420898, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.0370855331420898, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.10186767578125, requires_grad=False
+DEBUG VPSD: final_loss=0.10564549267292023, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.10565185546875, requires_grad=True
+DEBUG Pipeline: L_reward=0.10565185546875, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.3948867321014404, type=<class 'float'>
+DEBUG: tactile_metrics=0.49636977910995483, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.1253316402435303, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.1253316402435303, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.1253, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.1253316402435303, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.1253316402435303, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.1253316402435303, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.089111328125, requires_grad=False
+DEBUG VPSD: final_loss=0.100279800593853, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.10028076171875, requires_grad=True
+DEBUG Pipeline: L_reward=0.10028076171875, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.341102957725525, type=<class 'float'>
+DEBUG: tactile_metrics=0.4710584878921509, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.0800895690917969, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.0800895690917969, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.0801, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.0800895690917969, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.0800895690917969, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.0800895690917969, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.006816864013671875, requires_grad=False
+DEBUG VPSD: final_loss=0.007362823933362961, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.00736236572265625, requires_grad=True
+DEBUG Pipeline: L_reward=0.00736236572265625, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.042798638343811, type=<class 'float'>
+DEBUG: tactile_metrics=0.446755051612854, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=0.863985538482666, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=0.863985538482666, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(0.8640, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=0.863985538482666, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=0.863985538482666, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=0.863985538482666, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.028106689453125, requires_grad=False
+DEBUG VPSD: final_loss=0.024283772334456444, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.0242767333984375, requires_grad=True
+DEBUG Pipeline: L_reward=0.0242767333984375, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.5543016195297241, type=<class 'float'>
+DEBUG: tactile_metrics=0.4527239203453064, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.2238283157348633, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.2238283157348633, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.2238, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.2238283157348633, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.2238283157348633, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.2238283157348633, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.1787109375, requires_grad=False
+DEBUG VPSD: final_loss=0.2187115103006363, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.21875, requires_grad=True
+DEBUG Pipeline: L_reward=0.21875, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.4544179439544678, type=<class 'float'>
+DEBUG: tactile_metrics=0.4617761969566345, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.1566253900527954, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.1566253900527954, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.1566, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.1566253900527954, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.1566253900527954, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.1566253900527954, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.07379150390625, requires_grad=False
+DEBUG VPSD: final_loss=0.08534912765026093, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.0853271484375, requires_grad=True
+DEBUG Pipeline: L_reward=0.0853271484375, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.3300073146820068, type=<class 'float'>
+DEBUG: tactile_metrics=0.505641758441925, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.0826976299285889, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.0826976299285889, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.0827, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.0826976299285889, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.0826976299285889, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.0826976299285889, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.22265625, requires_grad=False
+DEBUG VPSD: final_loss=0.24106939136981964, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.2410888671875, requires_grad=True
+DEBUG Pipeline: L_reward=0.2410888671875, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.388711929321289, type=<class 'float'>
+DEBUG: tactile_metrics=0.4706987738609314, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.1133079528808594, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.1133079528808594, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.1133, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.1133079528808594, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.1133079528808594, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.1133079528808594, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.1981201171875, requires_grad=False
+DEBUG VPSD: final_loss=0.2205687016248703, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.2205810546875, requires_grad=True
+DEBUG Pipeline: L_reward=0.2205810546875, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.5227469205856323, type=<class 'float'>
+DEBUG: tactile_metrics=0.47525274753570557, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.2084987163543701, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.2084987163543701, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.2085, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.2084987163543701, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.2084987163543701, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.2084987163543701, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.009063720703125, requires_grad=False
+DEBUG VPSD: final_loss=0.010953495278954506, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.010955810546875, requires_grad=True
+DEBUG Pipeline: L_reward=0.010955810546875, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.3088887929916382, type=<class 'float'>
+DEBUG: tactile_metrics=0.4812975227832794, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.060611367225647, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.060611367225647, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.0606, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.060611367225647, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.060611367225647, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.060611367225647, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.1507568359375, requires_grad=False
+DEBUG VPSD: final_loss=0.1598944067955017, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.159912109375, requires_grad=True
+DEBUG Pipeline: L_reward=0.159912109375, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.1145694255828857, type=<class 'float'>
+DEBUG: tactile_metrics=0.4412859380245209, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=0.9125843644142151, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=0.9125843644142151, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(0.9126, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=0.9125843644142151, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=0.9125843644142151, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=0.9125843644142151, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.140869140625, requires_grad=False
+DEBUG VPSD: final_loss=0.12855497002601624, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.1285400390625, requires_grad=True
+DEBUG Pipeline: L_reward=0.1285400390625, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.5462058782577515, type=<class 'float'>
+DEBUG: tactile_metrics=0.49502700567245483, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=1.2308521270751953, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=1.2308521270751953, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(1.2309, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=1.2308521270751953, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=1.2308521270751953, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=1.2308521270751953, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.05517578125, requires_grad=False
+DEBUG VPSD: final_loss=0.0679132267832756, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.06793212890625, requires_grad=True
+DEBUG Pipeline: L_reward=0.06793212890625, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=1.1991710662841797, type=<class 'float'>
+DEBUG: tactile_metrics=0.4422636330127716, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=0.9720988273620605, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=0.9720988273620605, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(0.9721, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=0.9720988273620605, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=0.9720988273620605, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=0.9720988273620605, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.0125885009765625, requires_grad=False
+DEBUG VPSD: final_loss=0.012237266637384892, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.012237548828125, requires_grad=True
+DEBUG Pipeline: L_reward=0.012237548828125, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG: base_reward=0.8894281387329102, type=<class 'float'>
+DEBUG: tactile_metrics=0.44676917791366577, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: reward_value=0.7566304206848145, type=<class 'torch.Tensor'>, requires_grad=False
+DEBUG: final_reward=0.7566304206848145, type=<class 'torch.Tensor'>, requires_grad=True
+TactileReward ranking: [1], reward scores: [tensor(0.7566, device='cuda:0', requires_grad=True)]
+DEBUG Pipeline: reward_tensor=0.7566304206848145, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: weight=0.7566304206848145, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: rewards=0.7566304206848145, type=<class 'torch.Tensor'>, requires_grad=True
+DEBUG VPSD: mse_loss=0.11016845703125, requires_grad=False
+DEBUG VPSD: final_loss=0.08335680514574051, requires_grad=False, grad_fn=None
+WARNING: final_loss doesn't require grad, creating new tensor
+DEBUG VPSD: NEW final_loss=0.0833740234375, requires_grad=True
+DEBUG Pipeline: L_reward=0.0833740234375, type=<class 'torch.Tensor'>, requires_grad=True
+
+GPU memory usage: 16.25 GB
+painterly rendering complete.

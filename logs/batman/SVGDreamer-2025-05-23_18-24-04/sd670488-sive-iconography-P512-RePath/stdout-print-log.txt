@@ -1,0 +1,349 @@
+==> system args: 
+{'prompt': 'an image of Batman. full body action pose, complete detailed body. white background. empty background, high quality, 4K, ultra realistic', 'token_ind': 4, 'neg_prompt': 'nsfw, lowres, (bad), text, error, fewer, extra, missing, worst quality, jpeg artifacts, low quality, watermark, unfinished, displeasing, oldest, early, chromatic aberration, signature, extra digits, artistic error, username, scan', 'skip_sive': False, 'state': {'cpu': False, 'mprec': 'fp16'}, 'diffuser': {'download': True, 'force_download': False, 'resume_download': False}, 'diffvg': {'print_timing': False}, 'seed': 670488, 'multirun': True, 'srange': None, 'result_path': './logs/batman', 'save_step': 50, 'mv': False, 'framefreq': 5, 'framerate': 24, 'output_dir': '/workspace/logs/batman/SVGDreamer-2025-05-23_18-24-04'}
+==> yaml config args: 
+{'image_size': 600, 'path_svg': None, 'color_init': 'rand', 'style': 'iconography', 'sive_model_cfg': {'model_id': 'sd21b', 'ldm_speed_up': False, 'enable_xformers': True, 'gradient_checkpoint': False, 'cpu_offload': True, 'num_inference_steps': 100, 'guidance_scale': 7.5, 'lora_path': None}, 'sive_stage_optim': {'point': 1, 'width': 0.1, 'color': 0.01, 'bg': 0.01, 'optim': {'name': 'adam', 'betas': [0.9, 0.9], 'eps': 1e-06}, 'schedule': {'name': 'linear', 'keep_ratio': 0.2, 'decay_ratio': 0.4}}, 'sive': {'attn_cfg': {'cross_attn_res': 16, 'self_attn_res': 32, 'max_com': 20, 'mean_comp': False, 'comp_idx': 0, 'attn_coeff': 1.0}, 'mask_tau': 0.3, 'bg': {'style': 'iconography', 'num_iter': 50, 'num_paths': 256, 'path_schedule': 'repeat', 'schedule_each': 128, 'width': 3, 'num_segments': 4, 'segment_init': 'circle', 'radius': 20, 'coord_init': 'random', 'grid': 20, 'lr_schedule': True, 'optim_bg': False, 'use_attn_init': True, 'softmax_tau': 0.3, 'use_distance_weighted_loss': False, 'xing_loss_weight': 0.001}, 'fg': {'style': 'iconography', 'num_iter': 50, 'num_paths': 256, 'path_schedule': 'repeat', 'schedule_each': 128, 'width': 3, 'num_segments': 4, 'segment_init': 'circle', 'radius': 15, 'coord_init': 'random', 'grid': 20, 'lr_schedule': False, 'optim_bg': False, 'use_attn_init': True, 'softmax_tau': 0.3, 'use_distance_weighted_loss': False, 'xing_loss_weight': 0.01}, 'tog': {'reinit': False, 'num_iter': 10}}, 'num_paths': 512, 'trainable_bg': False, 'width': 3, 'num_segments': 4, 'segment_init': 'circle', 'radius': 20, 'coord_init': 'random', 'grid': 50, 'path_reinit': {'use': True, 'freq': 100, 'stop_step': 1000, 'opacity_threshold': 0.05, 'area_threshold': 64}, 'vpsd_stage_optim': {'point': 1, 'width': 0.1, 'color': 0.01, 'bg': 0.01, 'lr_schedule': True, 'optim': {'name': 'adam', 'betas': [0.9, 0.9], 'eps': 1e-06}, 'schedule': {'name': 'cosine', 'warmup_steps': 10, 'warmup_start_lr': 0.02, 'warmup_end_lr': 0.9, 'cosine_end_lr': 0.4}}, 'vpsd_model_cfg': {'model_id': 'sd21b', 'ldm_speed_up': False, 'enable_xformers': True, 'gradient_checkpoint': False, 'cpu_offload': True, 'num_inference_steps': 100, 'guidance_scale': 7.5, 'lora_path': None}, 'vpsd': {'use': True, 'type': 'vpsd', 'n_particle': 6, 'vsd_n_particle': 4, 'particle_aug': False, 'num_iter': 2000, 'guidance_scale': 7.5, 'grad_scale': 1.0, 'grad_clip_val': None, 't_range': [0.02, 0.98], 't_schedule': 'randint', 'phi_single': False, 'phi_model': 'lora', 'use_attn_scale': '${x.vpsd.phi_single}', 'lora_attn_scale': 1.0, 'phi_guidance_scale': 1.0, 'phi_t': False, 'phi_update_step': 1, 'phi_lr': 0.0001, 'phi_scheduler': 'ddim', 'phi_n_particle': 2, 'phi_ReFL': False, 'n_phi_sample': 1, 'phi_sample_step': 200, 'phi_infer_step': 50, 'phi_optim': {'name': 'adamw', 'betas': [0.9, 0.999], 'eps': 1e-08, 'weight_decay': None}, 'phi_schedule': {'use': False, 'name': 'cosine', 'warmup_steps': 50, 'warmup_start_lr': 1e-05, 'warmup_end_lr': 0.0001, 'total_step': 800, 'cosine_end_lr': 0.0001}}, 'reward_path': './checkpoint/ImageReward', 'xing_loss': {'use': False, 'weight': 0.01}}
+
+***** Model State *****
+-> Mixed Precision: fp16
+-> Weight dtype:  torch.float16
+-> Working Space: '/workspace/logs/batman/SVGDreamer-2025-05-23_18-24-04/sd670488-sive-iconography-P512-RePath'
+Process 0 using device: cuda
+-> state initialization complete 
+
+prompt: an image of Batman. full body action pose, complete detailed body. white background. empty background, high quality, 4K, ultra realistic
+neg_prompt: nsfw, lowres, (bad), text, error, fewer, extra, missing, worst quality, jpeg artifacts, low quality, watermark, unfinished, displeasing, oldest, early, chromatic aberration, signature, extra digits, artistic error, username, scan
+
+load diffusers pipeline: stabilityai/stable-diffusion-2-1-base
+=> enable xformers
+DDIMScheduler {
+  "_class_name": "DDIMScheduler",
+  "_diffusers_version": "0.20.2",
+  "beta_end": 0.012,
+  "beta_schedule": "scaled_linear",
+  "beta_start": 0.00085,
+  "clip_sample": false,
+  "clip_sample_range": 1.0,
+  "dynamic_thresholding_ratio": 0.995,
+  "num_train_timesteps": 1000,
+  "prediction_type": "epsilon",
+  "rescale_betas_zero_snr": false,
+  "sample_max_value": 1.0,
+  "set_alpha_to_one": false,
+  "skip_prk_steps": true,
+  "steps_offset": 1,
+  "thresholding": false,
+  "timestep_spacing": "leading",
+  "trained_betas": null
+}
+
+Processing particle 0 (successful so far: 0/6)
+
+LDM attn-map logging:
+the length of tokens is 30, select 4-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/batman/SVGDreamer-2025-05-23_18-24-04/sd670488-sive-iconography-P512-RePath/select_sample_0.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 1 Rendering End...
+
+Processing particle 1 (successful so far: 1/6)
+
+LDM attn-map logging:
+the length of tokens is 30, select 4-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/batman/SVGDreamer-2025-05-23_18-24-04/sd670488-sive-iconography-P512-RePath/select_sample_1.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 2 Rendering End...
+
+Processing particle 2 (successful so far: 2/6)
+
+LDM attn-map logging:
+the length of tokens is 30, select 4-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/batman/SVGDreamer-2025-05-23_18-24-04/sd670488-sive-iconography-P512-RePath/select_sample_2.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 3 Rendering End...
+
+Processing particle 3 (successful so far: 3/6)
+
+LDM attn-map logging:
+the length of tokens is 30, select 4-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/batman/SVGDreamer-2025-05-23_18-24-04/sd670488-sive-iconography-P512-RePath/select_sample_3.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 4 Rendering End...
+
+Processing particle 4 (successful so far: 4/6)
+
+LDM attn-map logging:
+the length of tokens is 30, select 4-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/batman/SVGDreamer-2025-05-23_18-24-04/sd670488-sive-iconography-P512-RePath/select_sample_4.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 5 Rendering End...
+
+Processing particle 5 (successful so far: 5/6)
+
+LDM attn-map logging:
+the length of tokens is 30, select 4-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/batman/SVGDreamer-2025-05-23_18-24-04/sd670488-sive-iconography-P512-RePath/select_sample_5.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 6 Rendering End...
+
+SVG fine-tuning via VPSD...
+load diffusers pipeline: stabilityai/stable-diffusion-2-1-base
+=> enable xformers
+DDIMScheduler {
+  "_class_name": "DDIMScheduler",
+  "_diffusers_version": "0.20.2",
+  "beta_end": 0.012,
+  "beta_schedule": "scaled_linear",
+  "beta_start": 0.00085,
+  "clip_sample": false,
+  "clip_sample_range": 1.0,
+  "dynamic_thresholding_ratio": 0.995,
+  "num_train_timesteps": 1000,
+  "prediction_type": "epsilon",
+  "rescale_betas_zero_snr": false,
+  "sample_max_value": 1.0,
+  "set_alpha_to_one": false,
+  "skip_prk_steps": true,
+  "steps_offset": 1,
+  "thresholding": false,
+  "timestep_spacing": "leading",
+  "trained_betas": null
+}
+
+load diffusers UNet: stabilityai/stable-diffusion-2-1-base
+=> enable xformers
+n_particles: 6, enhance_particles: False, n_particles of score: 4, n_particles of phi_model: 2, 
+t_range: [0.02, 0.98], t_schedule: randint, 
+guidance_scale: 7.5, phi_guidance_scale: 1.0.
+phi_model: lora, use lora_cross_attn: False, lora_attn_scale: 1.0. 
+
+-> init svg from `/workspace/logs/batman/SVGDreamer-2025-05-23_18-24-04/sd670488-sive-iconography-P512-RePath/SIVE_render_final_1.svg` ...
+-> init svg from `/workspace/logs/batman/SVGDreamer-2025-05-23_18-24-04/sd670488-sive-iconography-P512-RePath/SIVE_render_final_2.svg` ...
+-> init svg from `/workspace/logs/batman/SVGDreamer-2025-05-23_18-24-04/sd670488-sive-iconography-P512-RePath/SIVE_render_final_3.svg` ...
+-> init svg from `/workspace/logs/batman/SVGDreamer-2025-05-23_18-24-04/sd670488-sive-iconography-P512-RePath/SIVE_render_final_4.svg` ...
+-> init svg from `/workspace/logs/batman/SVGDreamer-2025-05-23_18-24-04/sd670488-sive-iconography-P512-RePath/SIVE_render_final_5.svg` ...
+-> init svg from `/workspace/logs/batman/SVGDreamer-2025-05-23_18-24-04/sd670488-sive-iconography-P512-RePath/SIVE_render_final_6.svg` ...
+-> Painter point Params: 512
+-> Painter color Params: 512
+-> Painter width Params: 0
+Total Optimization Steps: 2000
+select_path_ids_by_opc:  [54, 87]
+select_path_ids_by_area:  [134, 221, 261, 295, 309, 358, 368, 400, 401, 411, 415, 419, 440, 442, 447, 474, 475, 477, 483, 486, 491, 504]
+------------------------------ P0 - Step 100 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [331]
+select_path_ids_by_area:  [163, 164, 200, 386, 394, 413, 420, 421, 422, 437, 448, 464, 479, 507]
+------------------------------ P1 - Step 100 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [112]
+select_path_ids_by_area:  [174, 179, 272, 301, 303, 313, 339, 341, 343, 364, 369, 380, 381, 384, 404, 427, 447, 451, 453, 454, 458, 466, 473, 485, 487, 490, 511]
+------------------------------ P2 - Step 100 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 0.09000123292207718, mean: 0.8203680457227165, max: 1.0
+select_path_ids_by_area:  [131, 155, 247, 282, 318, 402, 408, 421, 432, 436, 454, 455, 476, 505, 509]
+------------------------------ P3 - Step 100 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 0.07735754549503326, mean: 0.8297297691751737, max: 1.0
+select_path_ids_by_area:  [176, 198, 244, 301, 309, 435, 462, 470, 473, 475, 477, 479, 485, 492, 507, 511]
+------------------------------ P4 - Step 100 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [19]
+select_path_ids_by_area:  [159, 330, 332, 383, 422, 423, 432, 434, 440, 463, 482, 501, 504]
+------------------------------ P5 - Step 100 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [27, 64, 71, 115, 180, 230, 279]
+select_path_ids_by_area:  [87, 240, 309, 330, 366, 391, 392, 411, 415, 422, 446, 474, 475, 486, 487, 501]
+------------------------------ P0 - Step 200 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [128]
+select_path_ids_by_area:  [164, 165, 421, 440, 455, 479]
+------------------------------ P1 - Step 200 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [136]
+select_path_ids_by_area:  [188, 207, 271, 296, 307, 320, 339, 348, 363, 364, 376, 386, 396, 406, 407, 412, 427, 428, 429, 438, 439, 441, 444, 445, 446, 459, 468, 469, 472, 480, 481, 487, 491, 493, 497, 509]
+------------------------------ P2 - Step 200 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 0.09108418971300125, mean: 0.7783425900561269, max: 1.0
+select_path_ids_by_area:  [93, 136, 209, 313, 369, 384, 386, 392, 416, 459, 488, 499]
+------------------------------ P3 - Step 200 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [331]
+select_path_ids_by_area:  [256, 262, 322, 359, 383, 386, 409, 432, 439, 449, 465, 468, 474, 500, 501]
+------------------------------ P4 - Step 200 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 0.07750967144966125, mean: 0.7739365998131689, max: 1.0
+select_path_ids_by_area:  [10, 46, 267, 291, 298, 311, 362, 376, 400, 423, 434, 459, 468, 470, 501, 511]
+------------------------------ P5 - Step 200 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [20, 43, 66, 92, 98, 166, 172, 189, 193, 205, 214, 237, 239]
+select_path_ids_by_area:  [27, 119, 194, 204, 221, 228, 391, 397, 400, 418, 421, 439, 440, 464, 482, 497, 506]
+------------------------------ P0 - Step 300 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 0.06302852183580399, mean: 0.7460478006833, max: 1.0
+select_path_ids_by_area:  [59, 152, 208, 263, 298, 371, 389, 396, 421, 437, 442, 458, 465, 470, 496, 509]
+------------------------------ P1 - Step 300 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [252, 466]
+select_path_ids_by_area:  [158, 201, 225, 263, 267, 268, 302, 307, 308, 320, 331, 369, 394, 395, 429, 446, 452, 458]
+------------------------------ P2 - Step 300 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [343, 345]
+select_path_ids_by_area:  [158, 229, 243, 386, 392, 409, 411, 418, 449, 455, 469, 470, 480]
+------------------------------ P3 - Step 300 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [107]
+select_path_ids_by_area:  [155, 165, 247, 260, 267, 311, 328, 330, 332, 349, 372, 404, 432, 433, 444, 445, 468, 475, 482, 493, 501]
+------------------------------ P4 - Step 300 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [419, 444]
+select_path_ids_by_area:  [10, 159, 189, 200, 267, 271, 272, 285, 313, 399, 400, 428, 451, 464, 468, 478, 503, 504]
+------------------------------ P5 - Step 300 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [77, 93, 95, 130, 143, 208, 209, 211, 224, 232]
+select_path_ids_by_area:  [66, 115, 134, 146, 230, 292, 350, 385, 391, 409, 414, 421, 425, 440, 442, 450, 464, 494, 499, 508]
+------------------------------ P0 - Step 400 Reinitializing Paths End ------------------------------
+
+-> opacity_record: min: 0.05758523941040039, mean: 0.7106692202069098, max: 1.0
+select_path_ids_by_area:  [147, 150, 153, 167, 313, 387, 388, 398, 406, 409, 418, 440, 442, 458, 462, 465, 470, 484, 492, 496]
+------------------------------ P1 - Step 400 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [53, 58, 86, 185, 254]
+select_path_ids_by_area:  [258, 264, 302, 307, 316, 320, 321, 331, 374, 382, 389, 394, 407, 418, 426, 428, 429, 446, 448, 478, 496, 499, 502]
+------------------------------ P2 - Step 400 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [499]
+select_path_ids_by_area:  [155, 201, 203, 229, 343, 385, 392, 411, 418, 425, 470, 475, 477, 490, 503, 510]
+------------------------------ P3 - Step 400 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [435]
+select_path_ids_by_area:  [58, 256, 300, 328, 331, 332, 352, 359, 380, 407, 411, 433, 435, 448, 453, 474, 495]
+------------------------------ P4 - Step 400 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [26, 51, 73, 235, 261, 446]
+select_path_ids_by_area:  [192, 272, 376, 392, 405, 431, 440, 445, 451, 453, 458, 464, 477, 483, 501]
+------------------------------ P5 - Step 400 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [24, 164, 217, 247, 411]
+select_path_ids_by_area:  [145, 166, 204, 325, 326, 370, 382, 391, 402, 406, 409, 411, 414, 425, 450, 452, 454, 466]
+------------------------------ P0 - Step 500 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [490]
+select_path_ids_by_area:  [59, 93, 129, 134, 182, 184, 313, 414, 423, 445, 473, 477, 484, 492]
+------------------------------ P1 - Step 500 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [52, 129, 303, 364, 406, 438, 445]
+select_path_ids_by_area:  [62, 152, 156, 185, 242, 254, 258, 259, 294, 301, 302, 315, 316, 345, 349, 365, 383, 390, 395, 428, 441, 452, 470]
+------------------------------ P2 - Step 500 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [289, 366, 409, 436]
+select_path_ids_by_area:  [139, 229, 250, 361, 386, 392, 418, 458, 464, 473, 491, 499]
+------------------------------ P3 - Step 500 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [383, 449]
+select_path_ids_by_area:  [2, 33, 100, 140, 180, 228, 237, 271, 294, 300, 309, 361, 372, 380, 392, 407, 433, 434, 448, 449, 467, 474, 497]
+------------------------------ P4 - Step 500 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [240, 434]
+select_path_ids_by_area:  [73, 84, 138, 267, 285, 312, 329, 376, 402, 426, 428, 444, 446, 475, 479]
+------------------------------ P5 - Step 500 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [36, 92, 100, 133, 237, 509]
+select_path_ids_by_area:  [64, 84, 92, 93, 119, 145, 155, 221, 275, 292, 315, 322, 382, 393, 402, 409, 442, 497, 508]
+------------------------------ P0 - Step 600 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [401, 495, 511]
+select_path_ids_by_area:  [129, 167, 208, 398, 399, 415, 442, 462]
+------------------------------ P1 - Step 600 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [6, 16, 135, 137, 221, 410, 432, 485]
+select_path_ids_by_area:  [28, 185, 222, 224, 242, 254, 262, 275, 316, 326, 374, 389, 391, 394, 421, 429, 452, 457, 460, 489, 505]
+------------------------------ P2 - Step 600 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [483]
+select_path_ids_by_area:  [131, 156, 208, 399, 454, 464, 471, 488, 498, 501]
+------------------------------ P3 - Step 600 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [30, 104, 106, 161, 432, 504]
+select_path_ids_by_area:  [119, 179, 228, 237, 250, 338, 357, 380, 386, 400, 411, 413, 470, 471, 477, 510]
+------------------------------ P4 - Step 600 Reinitializing Paths End ------------------------------
+
+select_path_ids_by_opc:  [172, 315, 433]
+select_path_ids_by_area:  [99, 182, 187, 235, 240, 243, 294, 405, 431, 441, 470, 477, 483]
+------------------------------ P5 - Step 600 Reinitializing Paths End ------------------------------
+

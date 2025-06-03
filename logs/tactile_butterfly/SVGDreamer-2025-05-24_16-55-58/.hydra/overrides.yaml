@@ -1,0 +1,11 @@
+- x=tactile
+- skip_sive=False
+- prompt='A tactile graphic of a black and white butterfly line drawing of a coloring
+  book image. The image should be simple and use only black and white. Remove excessive
+  detail.'
+- neg_prompt='text, extra, missing, unfinished, watermark, signature, username, scan,
+  frame, complex, detailed, intricate'
+- result_path=./logs/tactile_butterfly
+- seed=26
+- multirun=False
+- diffuser.download=True

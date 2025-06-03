@@ -1,0 +1,191 @@
+prompt: A black-and-white butterfly contour outline line illustration, created by
+  tracing the butterflys outlines. The lines should be crisp, continuous, and uniform
+  in width, with no background or extraneous detail. A tactile graphic is a graphic
+  felt by touch and should outline only the key features of the butterfly such as
+  the antennae or wings. Patterns on the wings should only emphasize key details.
+token_ind: 1
+neg_prompt: text, extra, missing, unfinished, watermark, signature, username, scan,
+  frame, complex, detailed, color,intricate
+skip_sive: false
+state:
+  cpu: false
+  mprec: fp16
+diffuser:
+  download: true
+  force_download: false
+  resume_download: false
+diffvg:
+  print_timing: false
+seed: 70
+multirun: false
+srange: null
+result_path: ./logs/butterfly_baseline
+save_step: 50
+mv: false
+framefreq: 5
+framerate: 24
+x:
+  image_size: 256
+  path_svg: null
+  color_init: rand
+  style: sketch
+  sive_model_cfg:
+    model_id: sd21b
+    ldm_speed_up: false
+    enable_xformers: true
+    gradient_checkpoint: true
+    cpu_offload: true
+    num_inference_steps: 100
+    guidance_scale: 5
+    lora_path: null
+  sive_stage_optim:
+    point: 1
+    width: 0.1
+    color: 0.01
+    bg: 0.01
+    optim:
+      name: adam
+      betas:
+      - 0.9
+      - 0.9
+      eps: 1.0e-06
+    schedule:
+      name: linear
+      keep_ratio: 0.2
+      decay_ratio: 0.4
+  sive:
+    attn_cfg:
+      cross_attn_res: 16
+      self_attn_res: 32
+      max_com: 20
+      mean_comp: false
+      comp_idx: 0
+      attn_coeff: 1.0
+    mask_tau: 0.3
+    bg:
+      style: iconography
+      num_iter: 50
+      num_paths: 256
+      path_schedule: repeat
+      schedule_each: 128
+      width: 3
+      num_segments: 4
+      segment_init: circle
+      radius: 20
+      coord_init: random
+      grid: 20
+      lr_schedule: true
+      optim_bg: false
+      use_attn_init: true
+      softmax_tau: 0.3
+      use_distance_weighted_loss: false
+      xing_loss_weight: 0.001
+    fg:
+      style: iconography
+      num_iter: 50
+      num_paths: 256
+      path_schedule: repeat
+      schedule_each: 128
+      width: 3
+      num_segments: 4
+      segment_init: circle
+      radius: 15
+      coord_init: random
+      grid: 20
+      lr_schedule: false
+      optim_bg: false
+      use_attn_init: true
+      softmax_tau: 0.3
+      use_distance_weighted_loss: false
+      xing_loss_weight: 0.01
+    tog:
+      reinit: false
+      num_iter: 10
+  num_paths: 512
+  trainable_bg: false
+  width: 3
+  num_segments: 4
+  segment_init: circle
+  radius: 20
+  coord_init: random
+  grid: 50
+  path_reinit:
+    use: true
+    freq: 100
+    stop_step: 1000
+    opacity_threshold: 0.05
+    area_threshold: 64
+  vpsd_stage_optim:
+    point: 1
+    width: 0.1
+    color: 0.01
+    bg: 0.01
+    lr_schedule: true
+    optim:
+      name: adam
+      betas:
+      - 0.9
+      - 0.9
+      eps: 1.0e-06
+    schedule:
+      name: cosine
+      warmup_steps: 10
+      warmup_start_lr: 0.02
+      warmup_end_lr: 0.9
+      cosine_end_lr: 0.4
+  vpsd_model_cfg:
+    model_id: sd21b
+    ldm_speed_up: false
+    enable_xformers: true
+    gradient_checkpoint: true
+    cpu_offload: true
+    num_inference_steps: 100
+    guidance_scale: 7.5
+    lora_path: null
+  vpsd:
+    use: true
+    type: vpsd
+    n_particle: 6
+    vsd_n_particle: 4
+    particle_aug: false
+    num_iter: 500
+    guidance_scale: 7.5
+    grad_scale: 1.0
+    grad_clip_val: null
+    t_range:
+    - 0.02
+    - 0.98
+    t_schedule: max_0.5_1500
+    phi_single: false
+    phi_model: lora
+    use_attn_scale: ${x.vpsd.phi_single}
+    lora_attn_scale: 1.0
+    phi_guidance_scale: 1.0
+    phi_t: false
+    phi_update_step: 1
+    phi_lr: 0.0001
+    phi_scheduler: ddim
+    phi_n_particle: 2
+    phi_ReFL: false
+    n_phi_sample: 1
+    phi_sample_step: 200
+    phi_infer_step: 50
+    phi_optim:
+      name: adamw
+      betas:
+      - 0.9
+      - 0.999
+      eps: 1.0e-08
+      weight_decay: null
+    phi_schedule:
+      use: false
+      name: cosine
+      warmup_steps: 50
+      warmup_start_lr: 1.0e-05
+      warmup_end_lr: 0.0001
+      total_step: 800
+      cosine_end_lr: 0.0001
+  reward_path: ./checkpoint/ImageReward
+  xing_loss:
+    use: false
+    weight: 0.01

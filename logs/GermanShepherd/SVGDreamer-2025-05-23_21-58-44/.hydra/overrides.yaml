@@ -1,0 +1,7 @@
+- x=iconography
+- skip_sive=False
+- prompt='A black and white German shepherd in vector art. Simple'
+- result_path=./logs/GermanShepherd
+- seed=26226
+- multirun=False
+- diffuser.download=True

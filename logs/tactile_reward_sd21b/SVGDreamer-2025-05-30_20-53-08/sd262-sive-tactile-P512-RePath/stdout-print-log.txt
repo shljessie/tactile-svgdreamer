@@ -1,0 +1,209 @@
+==> system args: 
+{'prompt': 'A black-and-white butterfly contour outline line graphic like a coloring book, created by tracing the outlines. The lines should be continuous, and uniform in width. There should be no background and no extraneous detail. Patterns on the wings should only emphasize key details.', 'token_ind': 1, 'neg_prompt': 'text, extra, missing, unfinished, watermark, signature, username, scan, frame, complex, detailed, color,intricate', 'skip_sive': False, 'state': {'cpu': False, 'mprec': 'fp16'}, 'diffuser': {'download': True, 'force_download': False, 'resume_download': False}, 'diffvg': {'print_timing': False}, 'seed': 262, 'multirun': False, 'srange': None, 'result_path': './logs/tactile_reward_sd21b', 'save_step': 50, 'mv': False, 'framefreq': 5, 'framerate': 24, 'output_dir': '/workspace/logs/tactile_reward_sd21b/SVGDreamer-2025-05-30_20-53-08'}
+==> yaml config args: 
+{'image_size': 600, 'path_svg': None, 'color_init': 'rand', 'style': 'tactile', 'sive_model_cfg': {'model_id': 'sd21b', 'ldm_speed_up': False, 'enable_xformers': True, 'gradient_checkpoint': False, 'cpu_offload': True, 'num_inference_steps': 100, 'guidance_scale': 7.5, 'lora_path': None}, 'sive_stage_optim': {'point': 1, 'width': 0.1, 'color': 0.01, 'bg': 0.01, 'optim': {'name': 'adam', 'betas': [0.9, 0.9], 'eps': 1e-06}, 'schedule': {'name': 'linear', 'keep_ratio': 0.2, 'decay_ratio': 0.4}}, 'sive': {'attn_cfg': {'cross_attn_res': 16, 'self_attn_res': 32, 'max_com': 20, 'mean_comp': False, 'comp_idx': 0, 'attn_coeff': 1.0}, 'mask_tau': 0.3, 'bg': {'style': 'iconography', 'num_iter': 100, 'num_paths': 256, 'path_schedule': 'repeat', 'schedule_each': 128, 'width': 3, 'num_segments': 4, 'segment_init': 'random', 'radius': 5, 'coord_init': 'random', 'grid': 20, 'lr_schedule': True, 'optim_bg': False, 'use_attn_init': True, 'softmax_tau': 0.3, 'use_distance_weighted_loss': False, 'xing_loss_weight': 0.001}, 'fg': {'style': 'iconography', 'num_iter': 50, 'num_paths': 256, 'path_schedule': 'repeat', 'schedule_each': 128, 'width': 6, 'num_segments': 4, 'segment_init': 'random', 'radius': 5, 'coord_init': 'random', 'grid': 20, 'lr_schedule': False, 'optim_bg': False, 'use_attn_init': True, 'softmax_tau': 0.3, 'use_distance_weighted_loss': False, 'xing_loss_weight': 0.01}, 'tog': {'reinit': False, 'num_iter': 10}}, 'num_paths': 512, 'trainable_bg': False, 'width': 6, 'num_segments': 4, 'segment_init': 'circle', 'radius': 5, 'coord_init': 'random', 'grid': 30, 'path_reinit': {'use': True, 'freq': 100, 'stop_step': 1000, 'opacity_threshold': 0.05, 'area_threshold': 64}, 'vpsd_stage_optim': {'point': 1, 'width': 0.1, 'color': 0.01, 'bg': 0.01, 'lr_schedule': True, 'optim': {'name': 'adam', 'betas': [0.9, 0.9], 'eps': 1e-06}, 'schedule': {'name': 'cosine', 'warmup_steps': 10, 'warmup_start_lr': 0.02, 'warmup_end_lr': 0.9, 'cosine_end_lr': 0.4}}, 'vpsd_model_cfg': {'model_id': 'sd21b', 'ldm_speed_up': False, 'enable_xformers': True, 'gradient_checkpoint': False, 'cpu_offload': True, 'num_inference_steps': 100, 'guidance_scale': 7.5, 'lora_path': None}, 'vpsd': {'use': True, 'type': 'vpsd', 'n_particle': 6, 'vsd_n_particle': 4, 'particle_aug': False, 'num_iter': 500, 'guidance_scale': 9.5, 'grad_scale': 1.0, 'grad_clip_val': None, 't_range': [0.02, 0.98], 't_schedule': 'max_0.5_1000', 'phi_single': False, 'phi_model': 'lora', 'use_attn_scale': '${x.vpsd.phi_single}', 'lora_attn_scale': 1.0, 'phi_guidance_scale': 1.0, 'phi_t': False, 'phi_update_step': 1, 'phi_lr': 0.0001, 'phi_scheduler': 'ddim', 'phi_n_particle': 2, 'phi_ReFL': True, 'n_phi_sample': 1, 'phi_sample_step': 200, 'phi_infer_step': 50, 'phi_optim': {'name': 'adamw', 'betas': [0.9, 0.999], 'eps': 1e-08, 'weight_decay': None}, 'phi_schedule': {'use': True, 'name': 'cosine', 'warmup_steps': 50, 'warmup_start_lr': 1e-05, 'warmup_end_lr': 0.0001, 'total_step': 800, 'cosine_end_lr': 0.0001}}, 'reward_path': './checkpoint/ImageReward', 'use_tactile_reward': True, 'xing_loss': {'use': False, 'weight': 0.01}}
+
+***** Model State *****
+-> Mixed Precision: fp16
+-> Weight dtype:  torch.float16
+-> Working Space: '/workspace/logs/tactile_reward_sd21b/SVGDreamer-2025-05-30_20-53-08/sd262-sive-tactile-P512-RePath'
+Process 0 using device: cuda
+-> state initialization complete 
+
+prompt: A black-and-white butterfly contour outline line graphic like a coloring book, created by tracing the outlines. The lines should be continuous, and uniform in width. There should be no background and no extraneous detail. Patterns on the wings should only emphasize key details.
+neg_prompt: text, extra, missing, unfinished, watermark, signature, username, scan, frame, complex, detailed, color,intricate
+
+load diffusers pipeline: stabilityai/stable-diffusion-2-1-base
+=> enable xformers
+DDIMScheduler {
+  "_class_name": "DDIMScheduler",
+  "_diffusers_version": "0.20.2",
+  "beta_end": 0.012,
+  "beta_schedule": "scaled_linear",
+  "beta_start": 0.00085,
+  "clip_sample": false,
+  "clip_sample_range": 1.0,
+  "dynamic_thresholding_ratio": 0.995,
+  "num_train_timesteps": 1000,
+  "prediction_type": "epsilon",
+  "rescale_betas_zero_snr": false,
+  "sample_max_value": 1.0,
+  "set_alpha_to_one": false,
+  "skip_prk_steps": true,
+  "steps_offset": 1,
+  "thresholding": false,
+  "timestep_spacing": "leading",
+  "trained_betas": null
+}
+
+Processing particle 0 (successful so far: 0/6)
+
+LDM attn-map logging:
+the length of tokens is 59, select 1-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/tactile_reward_sd21b/SVGDreamer-2025-05-30_20-53-08/sd262-sive-tactile-P512-RePath/select_sample_0.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 1 Rendering End...
+
+Processing particle 1 (successful so far: 1/6)
+
+LDM attn-map logging:
+the length of tokens is 59, select 1-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/tactile_reward_sd21b/SVGDreamer-2025-05-30_20-53-08/sd262-sive-tactile-P512-RePath/select_sample_1.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 2 Rendering End...
+
+Processing particle 2 (successful so far: 2/6)
+
+LDM attn-map logging:
+the length of tokens is 59, select 1-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/tactile_reward_sd21b/SVGDreamer-2025-05-30_20-53-08/sd262-sive-tactile-P512-RePath/select_sample_2.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 3 Rendering End...
+
+Processing particle 3 (successful so far: 3/6)
+
+LDM attn-map logging:
+the length of tokens is 59, select 1-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/tactile_reward_sd21b/SVGDreamer-2025-05-30_20-53-08/sd262-sive-tactile-P512-RePath/select_sample_3.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 4 Rendering End...
+
+Processing particle 4 (successful so far: 4/6)
+
+LDM attn-map logging:
+the length of tokens is 59, select 1-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/tactile_reward_sd21b/SVGDreamer-2025-05-30_20-53-08/sd262-sive-tactile-P512-RePath/select_sample_4.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 5 Rendering End...
+
+Processing particle 5 (successful so far: 5/6)
+
+LDM attn-map logging:
+the length of tokens is 59, select 1-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/tactile_reward_sd21b/SVGDreamer-2025-05-30_20-53-08/sd262-sive-tactile-P512-RePath/select_sample_5.png
+-> Background rendering: 
+path_schedule: [128, 128]
+Background rendering failed for particle 5, trying next particle
+Processing particle 6 (successful so far: 5/6)
+
+LDM attn-map logging:
+the length of tokens is 59, select 1-th token
+origin cross_attn_map shape: torch.Size([16, 16, 77])
+select cross_attn_map shape: torch.Size([16, 16])
+self-attention maps: (1024, 1024), u: (1024, 1024), s: (1024,), vh: (1024, 1024)
+select 0-th comp.
+-> fusion attn_map: (600, 600) 
+
+load target file from: /workspace/logs/tactile_reward_sd21b/SVGDreamer-2025-05-30_20-53-08/sd262-sive-tactile-P512-RePath/select_sample_6.png
+-> Background rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+-> Foreground rendering: 
+path_schedule: [128, 128]
+=> adding 128 paths, n_path: 128, n_point: 128, n_width: 0, n_color: 128
+=> adding 128 paths, n_path: 256, n_point: 128, n_width: 0, n_color: 128
+Vector Particle 7 Rendering End...
+
+SVG fine-tuning via VPSD...
+load diffusers pipeline: stabilityai/stable-diffusion-2-1-base
+=> enable xformers
+DDIMScheduler {
+  "_class_name": "DDIMScheduler",
+  "_diffusers_version": "0.20.2",
+  "beta_end": 0.012,
+  "beta_schedule": "scaled_linear",
+  "beta_start": 0.00085,
+  "clip_sample": false,
+  "clip_sample_range": 1.0,
+  "dynamic_thresholding_ratio": 0.995,
+  "num_train_timesteps": 1000,
+  "prediction_type": "epsilon",
+  "rescale_betas_zero_snr": false,
+  "sample_max_value": 1.0,
+  "set_alpha_to_one": false,
+  "skip_prk_steps": true,
+  "steps_offset": 1,
+  "thresholding": false,
+  "timestep_spacing": "leading",
+  "trained_betas": null
+}
+
+load diffusers UNet: stabilityai/stable-diffusion-2-1-base
+=> enable xformers
+n_particles: 6, enhance_particles: False, n_particles of score: 4, n_particles of phi_model: 2, 
+t_range: [0.02, 0.98], t_schedule: max_0.5_1000, 
+guidance_scale: 9.5, phi_guidance_scale: 1.0.
+phi_model: lora, use lora_cross_attn: False, lora_attn_scale: 1.0. 
+

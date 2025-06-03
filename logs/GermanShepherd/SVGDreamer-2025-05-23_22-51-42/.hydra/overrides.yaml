@@ -1,0 +1,9 @@
+- x=iconography
+- skip_sive=False
+- prompt='A tactile graphic of a butterfly diagram. The image should be simple and
+  use only black and white. A tactile graphic is a graphic felt by touch the strokes
+  should outline the key features. Remove excessive detail.'
+- result_path=./logs/GermanShepherd
+- seed=26226
+- multirun=False
+- diffuser.download=True
