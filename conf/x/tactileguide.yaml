@@ -1,7 +1,7 @@
 image_size: 600 # canvas size
-path_svg: ~  # if you want to load a svg file and train from it
+path_svg: 'butterfly.svg' # if you want to load a svg file and train from it
 color_init: 'rand' # if skip_live=True, then use color_init to init target_img
-style: "sketch" # "iconography", "pixelart", "low-poly", "painting", "sketch", "ink"
+style: "tactile" # "iconography", "pixelart", "low-poly", "painting", "sketch", "ink"
 
 # stable diffusion in SIVE stage
 sive_model_cfg:
@@ -40,7 +40,7 @@ sive:
     attn_coeff: 1.0 # attn fusion, w * cross-attn + (1-w) * self-attn
   mask_tau: 0.3 # the threshold used to convert the attention map into a mask
   bg:
-    style: "sketch" # 'iconography' ,"pixelart", "sketch", 'painting', 'ink'
+    style: "iconography" # 'iconography' ,"pixelart", "sketch", 'painting', 'ink'
     num_iter: 10
     num_paths: 256
     path_schedule: 'repeat' # 'repeat', 'list'
@@ -60,7 +60,7 @@ sive:
     use_distance_weighted_loss: False
     xing_loss_weight: 0.001
   fg:
-    style: "sketch" # 'iconography' ,"pixelart", "sketch", 'painting', 'ink'
+    style: "iconography" # 'iconography' ,"pixelart", "sketch", 'painting', 'ink'
     num_iter: 10
     num_paths: 256 # number of strokes
     path_schedule: 'repeat' # 'repeat', 'list'
@@ -84,14 +84,14 @@ sive:
     num_iter: 10
 
 # VPSD primitives
-num_paths: 64 # number of strokes
+num_paths: 512 # number of strokes
 trainable_bg: False # set the background to be trainable
 width: 3 # stroke width
 num_segments: 4
 segment_init: 'circle' # 'random'
 radius: 20
 coord_init: 'random' # 'random', 'naive', 'sparse' place the first control point
-grid: 50 # divide the canvas into n grids
+grid: 30 # divide the canvas into n grids
 path_reinit: # reinitializing paths
   use: True
   freq: 100 # every n iterations
@@ -135,14 +135,14 @@ vpsd:
   n_particle: 6 # 4, 8, 16
   vsd_n_particle: 4 # the batch size of particles
   particle_aug: False # do data enhancement for the input particles
-  num_iter: 100 # total iterations
+  num_iter: 2000 # total iterations
   guidance_scale: 7.5 # CFG value
   grad_scale: 1.0 # increase or decrease the gradient
   grad_clip_val: ~ # eg: 10, clip the gradient of VPSD
   t_range: [ 0.02, 0.98 ]
   # 'randint': random time steps, this may have a more authentic style.
   # 'max_0.5_900': annealing from 0.98 to 0.5 after 900 steps, this may have a more colorful results.
-  t_schedule: 'max_0.5_1300' # or 'randint'
+  t_schedule: 'max_0.5_1000' # or 'randint'
   # phi model config
   phi_single: False # if False new an unet model to estimate noise
   phi_model: 'lora' # 'lora', 'unet_simple'

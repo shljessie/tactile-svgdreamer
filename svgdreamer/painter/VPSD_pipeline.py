@@ -171,6 +171,22 @@ class VectorizedParticleSDSPipeline(torch.nn.Module):
                       device,
                       do_classifier_free_guidance,
                       negative_prompt=None):
+        # Check if we're using SDXL
+        is_sdxl = hasattr(self.sd_pipeline, "text_encoder_2") and self.sd_pipeline.text_encoder_2 is not None
+        
+        if is_sdxl:
+            # SDXL uses a different text encoding process with two encoders
+            return self._encode_prompt_sdxl(prompt, device, do_classifier_free_guidance, negative_prompt)
+        else:
+            # Standard SD models - use the existing logic
+            return self._encode_prompt_sd(prompt, device, do_classifier_free_guidance, negative_prompt)
+            
+    @torch.no_grad()
+    def _encode_prompt_sd(self,
+                      prompt,
+                      device,
+                      do_classifier_free_guidance,
+                      negative_prompt=None):
         # text conditional embed
         text_inputs = self.tokenizer(
             prompt,
@@ -202,6 +218,83 @@ class VectorizedParticleSDSPipeline(torch.nn.Module):
             concat_prompt_embeds = torch.cat([negative_prompt_embeds, prompt_embeds])
             return concat_prompt_embeds, negative_prompt_embeds, prompt_embeds
 
+        return prompt_embeds, None, None
+        
+    @torch.no_grad()
+    def _encode_prompt_sdxl(self,
+                      prompt,
+                      device,
+                      do_classifier_free_guidance,
+                      negative_prompt=None):
+        # SDXL has 2 text encoders
+        tokenizer = self.sd_pipeline.tokenizer
+        tokenizer_2 = self.sd_pipeline.tokenizer_2
+        text_encoder = self.sd_pipeline.text_encoder
+        text_encoder_2 = self.sd_pipeline.text_encoder_2
+
+        # Get prompt text embeddings
+        text_inputs = tokenizer(
+            prompt,
+            padding="max_length",
+            max_length=tokenizer.model_max_length,
+            truncation=True,
+            return_tensors="pt",
+        )
+        text_input_ids = text_inputs.input_ids.to(device)
+        prompt_embeds = text_encoder(text_input_ids)[0]
+
+        # Get prompt text embeddings from second text encoder
+        text_inputs_2 = tokenizer_2(
+            prompt,
+            padding="max_length",
+            max_length=tokenizer_2.model_max_length,
+            truncation=True,
+            return_tensors="pt",
+        )
+        text_input_ids_2 = text_inputs_2.input_ids.to(device)
+        prompt_embeds_2 = text_encoder_2(text_input_ids_2)[0]
+        
+        # Concatenate the embeddings
+        prompt_embeds = torch.concat([prompt_embeds, prompt_embeds_2], dim=-1)
+        
+        # Apply classifier-free guidance if needed
+        if do_classifier_free_guidance:
+            if negative_prompt is None:
+                negative_prompt = [""]
+            elif isinstance(negative_prompt, str):
+                negative_prompt = [negative_prompt]
+                
+            # Get negative prompt embeddings for classifier-free guidance
+            uncond_tokens = negative_prompt
+            uncond_input = tokenizer(
+                uncond_tokens,
+                padding="max_length",
+                max_length=tokenizer.model_max_length,
+                truncation=True,
+                return_tensors="pt",
+            )
+            uncond_input_ids = uncond_input.input_ids.to(device)
+            negative_prompt_embeds = text_encoder(uncond_input_ids)[0]
+            
+            # Do the same for the second text encoder
+            uncond_input_2 = tokenizer_2(
+                uncond_tokens,
+                padding="max_length",
+                max_length=tokenizer_2.model_max_length,
+                truncation=True,
+                return_tensors="pt",
+            )
+            uncond_input_ids_2 = uncond_input_2.input_ids.to(device)
+            negative_prompt_embeds_2 = text_encoder_2(uncond_input_ids_2)[0]
+            
+            # Concatenate the embeddings
+            negative_prompt_embeds = torch.concat([negative_prompt_embeds, negative_prompt_embeds_2], dim=-1)
+            
+            # Concatenate the negative and positive embeddings for classifier-free guidance
+            concat_prompt_embeds = torch.cat([negative_prompt_embeds, prompt_embeds])
+            
+            return concat_prompt_embeds, negative_prompt_embeds, prompt_embeds
+            
         return prompt_embeds, None, None
 
     def sampling(self,
@@ -246,6 +339,26 @@ class VectorizedParticleSDSPipeline(torch.nn.Module):
             do_classifier_free_guidance,
             negative_prompt,
         )
+        
+        # Check if we're using SDXL
+        is_sdxl = hasattr(self.sd_pipeline, "text_encoder_2") and self.sd_pipeline.text_encoder_2 is not None
+        
+        # For SDXL, prepare the additional conditioning
+        added_cond_kwargs = None
+        if is_sdxl:
+            # Get time_ids for SDXL (original_size, crops_coords_top_left, target_size)
+            original_size = (1024, 1024)
+            target_size = (height, width)
+            crops_coords_top_left = (0, 0)
+            
+            add_time_ids = torch.tensor([
+                list(original_size) + list(crops_coords_top_left) + list(target_size)
+            ]).to(self.device)
+            
+            if do_classifier_free_guidance:
+                add_time_ids = torch.cat([add_time_ids] * 2)
+                
+            added_cond_kwargs = {"time_ids": add_time_ids}
 
         # 4. Prepare timesteps
         scheduler.set_timesteps(num_inference_steps, device=self.device)
@@ -281,6 +394,7 @@ class VectorizedParticleSDSPipeline(torch.nn.Module):
                     t,
                     encoder_hidden_states=prompt_embeds,
                     cross_attention_kwargs=cross_attention_kwargs,
+                    added_cond_kwargs=added_cond_kwargs,
                     return_dict=False,
                 )[0]
 
@@ -358,6 +472,8 @@ class VectorizedParticleSDSPipeline(torch.nn.Module):
                              output_type=output_type)
 
     def encode2latent(self, images):
+        # Ensure images are using the same dtype as the model weights
+        images = images.to(dtype=self.dtype)
         images = (2 * images - 1).clamp(-1.0, 1.0)  # images: [B, 3, H, W]
         # encode images
         latents = self.vae.encode(images).latent_dist.sample()
@@ -378,7 +494,7 @@ class VectorizedParticleSDSPipeline(torch.nn.Module):
                         as_latent: bool = False):
         # interp to 512x512 to be fed into vae.
         if as_latent:
-            latents = pred_rgb
+            latents = pred_rgb.to(dtype=self.dtype)
         else:
             pred_rgb_ = F.interpolate(pred_rgb, (512, 512), mode='bilinear', align_corners=False)
             # encode image into latents with vae, requires grad!
@@ -418,6 +534,11 @@ class VectorizedParticleSDSPipeline(torch.nn.Module):
                              pred_rgb: torch.Tensor,
                              weight: float = 1,
                              new_timesteps: bool = True):
+        # Debug info
+        print(f"DEBUG VPSD: weight={weight}, type={type(weight)}, requires_grad={weight.requires_grad if isinstance(weight, torch.Tensor) else 'N/A'}")
+        
+        # Ensure correct dtype from the beginning
+        pred_rgb = pred_rgb.to(dtype=self.dtype)
         # interp to 512x512 to be fed into vae.
         pred_rgb_ = F.interpolate(pred_rgb, (512, 512), mode='bilinear', align_corners=False)
         # encode image into latents with vae, requires grad!
@@ -451,8 +572,33 @@ class VectorizedParticleSDSPipeline(torch.nn.Module):
             cross_attention_kwargs=self.lora_cross_attention_kwargs,
         ).sample
 
-        rewards = torch.tensor(weight, dtype=self.dtype, device=self.device)
-        return rewards * F.mse_loss(noise_pred, target, reduction="mean")
+        # Ensure weight is a tensor with gradients
+        if not isinstance(weight, torch.Tensor) or not weight.requires_grad:
+            rewards = torch.tensor(weight, dtype=self.dtype, device=self.device, requires_grad=True)
+        else:
+            rewards = weight
+        
+        print(f"DEBUG VPSD: rewards={rewards}, type={type(rewards)}, requires_grad={rewards.requires_grad}")
+
+        # Calculate MSE loss
+        mse_loss = F.mse_loss(noise_pred, target, reduction="mean")
+        print(f"DEBUG VPSD: mse_loss={mse_loss}, requires_grad={mse_loss.requires_grad}")
+        
+        # Final loss - ensure we don't detach the gradients
+        final_loss = rewards * mse_loss
+        print(f"DEBUG VPSD: final_loss={final_loss}, requires_grad={final_loss.requires_grad}, grad_fn={final_loss.grad_fn}")
+        
+        # Create a new tensor with requires_grad=True to force gradients if needed
+        if not final_loss.requires_grad:
+            print("WARNING: final_loss doesn't require grad, creating new tensor")
+            # Create a new tensor with requires_grad=True to force the graph
+            final_loss = torch.tensor(final_loss.item(), 
+                                     device=self.device, 
+                                     dtype=self.dtype, 
+                                     requires_grad=True)
+            print(f"DEBUG VPSD: NEW final_loss={final_loss}, requires_grad={final_loss.requires_grad}")
+            
+        return final_loss
 
     def schedule_timestep(self, step):
         min_step = int(self.num_train_timesteps * self.t_range[0])
@@ -543,6 +689,30 @@ class VectorizedParticleSDSPipeline(torch.nn.Module):
         # timestep a.k.a noise level
         self.t = self.schedule_timestep(step)
 
+        # Check if we're using SDXL
+        is_sdxl = hasattr(self.sd_pipeline, "text_encoder_2") and self.sd_pipeline.text_encoder_2 is not None
+        
+        # For SDXL, prepare the additional conditioning
+        added_cond_kwargs = None
+        if is_sdxl:
+            # Get time_ids for SDXL (original_size, crops_coords_top_left, target_size)
+            original_size = (1024, 1024)
+            target_size = (512, 512)  # Standard size for the model
+            crops_coords_top_left = (0, 0)
+            
+            add_time_ids = torch.tensor([
+                list(original_size) + list(crops_coords_top_left) + list(target_size)
+            ]).to(self.device)
+            
+            # Repeat for batch size
+            add_time_ids = add_time_ids.repeat(latents_vsd.shape[0], 1)
+            
+            # Duplicate for classifier-free guidance
+            if do_classifier_free_guidance:
+                add_time_ids = torch.cat([add_time_ids] * 2)
+                
+            added_cond_kwargs = {"time_ids": add_time_ids}
+
         # predict the noise residual with unet, stop gradient
         with torch.no_grad():
             # add noise
@@ -554,7 +724,8 @@ class VectorizedParticleSDSPipeline(torch.nn.Module):
             noise_pred_pretrain = self.unet(
                 latent_model_input, self.t,
                 encoder_hidden_states=text_embeddings,
-                cross_attention_kwargs={'scale': 0.0} if self.phi_single else {}
+                cross_attention_kwargs={'scale': 0.0} if self.phi_single else {},
+                added_cond_kwargs=added_cond_kwargs,
             ).sample
 
             # use conditional text embeddings in phi_model
@@ -563,7 +734,8 @@ class VectorizedParticleSDSPipeline(torch.nn.Module):
             noise_pred_est = self.unet_phi(
                 latents_noisy, self.t,
                 encoder_hidden_states=text_embeddings_cond,
-                cross_attention_kwargs=self.lora_cross_attention_kwargs
+                cross_attention_kwargs=self.lora_cross_attention_kwargs,
+                added_cond_kwargs=added_cond_kwargs if is_sdxl else None,
             ).sample
 
         # get pretrained score

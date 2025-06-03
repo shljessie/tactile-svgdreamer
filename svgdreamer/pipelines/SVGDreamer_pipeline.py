@@ -36,7 +36,7 @@ class SVGDreamerPipeline(ModelState):
 
     def __init__(self, args):
         # assert
-        assert args.x.style in ["iconography", "pixelart", "low-poly", "painting", "sketch", "ink"]
+        assert args.x.style in ["iconography", "pixelart", "low-poly", "painting", "sketch", "ink", "tactile"]
         args.skip_sive = True if args.x.style in ["pixelart", "low-poly"] else args.skip_sive
         # assert args.x.vpsd.n_particle >= args.x.vpsd.vsd_n_particle
         if args.x.vpsd.vsd_n_particle > args.x.vpsd.n_particle: args.x.vpsd.vsd_n_particle = args.x.vpsd.n_particle
@@ -481,7 +481,13 @@ class SVGDreamerPipeline(ModelState):
         # init reward model
         reward_model = None
         if guidance_cfg.phi_ReFL:
-            reward_model = RM.load("ImageReward-v1.0", device=self.device, download_root=self.x_cfg.reward_path)
+            if hasattr(self.x_cfg, 'use_tactile_reward') and self.x_cfg.use_tactile_reward:
+                from svgdreamer.reward import TactileReward
+                reward_model = TactileReward(self.x_cfg.reward_path)
+                self.print("Using TactileReward model for reward feedback learning")
+            else:
+                reward_model = RM.load("ImageReward-v1.0", device=self.device, download_root=self.x_cfg.reward_path)
+                self.print("Using standard ImageReward model for reward feedback learning")
 
         # create svg renderer
         if isinstance(init_svg_path, List):  # mode 3
@@ -606,16 +612,49 @@ class SVGDreamerPipeline(ModelState):
                                     num_rows=max(len(phi_outputs) // 6, 1),
                                     fp=self.phi_samples_dir / f'samples_iter{self.step}.png')
 
-                    ranking, rewards = reward_model.inference_rank(text_prompt, phi_sample_paths)
-                    self.print(f"ranking: {ranking}, reward score: {rewards}")
+                        # Handle different reward models
+                        if hasattr(self.x_cfg, 'use_tactile_reward') and self.x_cfg.use_tactile_reward:
+                            # For TactileReward, we need to pass both the image and the SVG paths
+                            rewards = []
+                            ranking = []
+                            for k, sample_path in enumerate(phi_sample_paths):
+                                # Load image
+                                img = Image.open(sample_path)
+                                # Get SVG paths from the most recent renderers
+                                svg_paths = renderers[k % len(renderers)].shapes
+                                # Get reward score
+                                reward = reward_model.get_reward(img, svg_paths, text_prompt)
+                                rewards.append(reward)
+                                ranking.append(k+1)  # Using 1-based indexing like ImageReward
+                            
+                            # Convert tensor rewards to CPU numpy for sorting
+                            rewards_for_sorting = [r.detach().cpu().numpy() if isinstance(r, torch.Tensor) else r for r in rewards]
+                            sorted_indices = np.argsort(-np.array(rewards_for_sorting))
+                            ranking = [sorted_indices.tolist().index(i) + 1 for i in range(len(rewards))]
+                            
+                            self.print(f"TactileReward ranking: {ranking}, reward scores: {rewards}")
+                        else:
+                            # Standard ImageReward approach
+                            ranking, rewards = reward_model.inference_rank(text_prompt, phi_sample_paths)
+                            self.print(f"ImageReward ranking: {ranking}, reward scores: {rewards}")
 
-                    for k in range(guidance_cfg.n_phi_sample):
-                        phi = self.target_file_preprocess(phi_sample_paths[ranking[k] - 1])
-                        L_reward = pipeline.train_phi_model_refl(phi, weight=rewards[k])
-
-                        phi_optimizer.zero_grad()
-                        L_reward.backward()
-                        phi_optimizer.step()
+                        for k in range(guidance_cfg.n_phi_sample):
+                            phi = self.target_file_preprocess(phi_sample_paths[ranking[k] - 1])
+                            # Convert reward to tensor if it's not already a tensor with gradients
+                            if not isinstance(rewards[k], torch.Tensor) or not rewards[k].requires_grad:
+                                reward_tensor = torch.tensor(rewards[k], device=self.device, dtype=self.weight_dtype, requires_grad=True)
+                            else:
+                                reward_tensor = rewards[k].clone().detach().requires_grad_(True)
+                            
+                            print(f"DEBUG Pipeline: reward_tensor={reward_tensor}, type={type(reward_tensor)}, requires_grad={reward_tensor.requires_grad}")
+                            
+                            L_reward = pipeline.train_phi_model_refl(phi, weight=reward_tensor)
+                            
+                            print(f"DEBUG Pipeline: L_reward={L_reward}, type={type(L_reward)}, requires_grad={L_reward.requires_grad}")
+                            
+                            phi_optimizer.zero_grad()
+                            L_reward.backward()
+                            phi_optimizer.step()
 
                 # update the learning rate of the phi_model
                 if phi_scheduler is not None:

@@ -126,7 +126,7 @@ class Painter(DiffVGState):
                     )
                     self.shape_groups.append(path_group)
 
-            elif self.style in ['sketch', 'ink']:
+            elif self.style in ['sketch', 'ink', 'tactile']:
                 path = self.get_path()
                 self.shapes.append(path)
 
@@ -228,7 +228,7 @@ class Painter(DiffVGState):
                 is_closed=True
             )
 
-        elif self.style in ['sketch', 'painting', 'ink']:
+        elif self.style in ['sketch', 'painting', 'ink', 'tactile']:
             num_control_points = torch.zeros(num_segments, dtype=torch.long) + 2
             points = []
             p0 = [random.random(), random.random()]
@@ -275,10 +275,11 @@ class Painter(DiffVGState):
         return path
 
     def clip_curve_shape(self):
-        if self.style in ['sketch', 'ink']:
+        if self.style in ['sketch', 'ink', 'tactile']:
             for group in self.shape_groups:
-                group.stroke_color.data[:3].clamp_(0., 0.)  # to force black stroke
-                group.stroke_color.data[-1].clamp_(0., 1.)  # clip alpha
+                if group.stroke_color is not None:
+                    group.stroke_color.data[:3].clamp_(0., 0.)  # to force black stroke
+                    group.stroke_color.data[-1].clamp_(0., 1.)  # clip alpha
             for path in self.shapes:
                 path.stroke_width.data.clamp_(1.0, self.stroke_width)  # clip width
         else:
@@ -303,7 +304,7 @@ class Painter(DiffVGState):
             area_threshold: Threshold of the closed polygon area.
             fpath: The path to save the reinitialized SVG.
         """
-        if self.style not in ['iconography', 'low-poly', 'painting', 'ink']:
+        if self.style not in ['iconography', 'low-poly', 'painting', 'ink', 'tactile']:
             return None, None, None
 
         def get_keys_below_threshold(my_dict, threshold):
@@ -341,11 +342,18 @@ class Painter(DiffVGState):
                     stats_np = np.array(area_records)
                     print(f"-> area_records: min: {stats_np.min()}, mean: {stats_np.mean()}, max: {stats_np.max()}")
 
-        elif self.style in ['painting', 'ink']:
+        elif self.style in ['painting', 'ink', 'tactile']:
             # re-init by opacity_threshold
             if opacity_threshold != 0 and opacity_threshold is not None:
-                opacity_record_ = {group.shape_ids.item(): group.stroke_color[-1].item()
-                                   for group in self.shape_groups}
+                opacity_record_ = {}
+                for group in self.shape_groups:
+                    # Check if stroke_color exists before accessing it
+                    if group.stroke_color is not None:
+                        opacity_record_[group.shape_ids.item()] = group.stroke_color[-1].item()
+                    else:
+                        # Default opacity for groups without stroke_color
+                        opacity_record_[group.shape_ids.item()] = 1.0
+                
                 select_path_ids_by_opc = get_keys_below_threshold(opacity_record_, opacity_threshold)
 
                 if len(select_path_ids_by_opc) > 0:
@@ -367,7 +375,7 @@ class Painter(DiffVGState):
                     self.shapes[i].id = path.id
                     self.shapes[i].points.requires_grad = True
                     extra_point_params.append(self.shapes[i].points)
-                    if self.style in ['painting', 'ink']:
+                    if self.style in ['painting', 'ink', 'tactile']:
                         self.shapes[i].stroke_width.requires_grad = True
                         extra_width_params.append(self.shapes[i].stroke_width)
 
@@ -384,7 +392,7 @@ class Painter(DiffVGState):
                         # new shape
                         self.shape_groups[i].fill_color.requires_grad = True
                         extra_color_params.append(self.shape_groups[i].fill_color)
-                    elif self.style in ['painting']:
+                    elif self.style in ['painting', 'tactile']:
                         stroke_color_init = torch.FloatTensor(np.random.uniform(size=[4]))
                         stroke_color_init[-1] = 1.0
                         self.shape_groups[i] = pydiffvg.ShapeGroup(
@@ -625,7 +633,8 @@ class PainterOptimizer:
             "low-poly": (True, True, False),
             "sketch": (True, False, False),
             "ink": (True, False, True),
-            "painting": (True, True, True)
+            "painting": (True, True, True),
+            "tactile": (True, False, True)
         }.get(style, (False, False, False))
         self.optim_bg = trainable_bg
 

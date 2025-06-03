@@ -62,6 +62,22 @@ class DiffusionPipeline(torch.nn.Module):
                       device,
                       do_classifier_free_guidance,
                       negative_prompt=None):
+        # Check if we're using SDXL
+        is_sdxl = hasattr(self.sd_pipeline, "text_encoder_2") and self.sd_pipeline.text_encoder_2 is not None
+        
+        if is_sdxl:
+            # SDXL uses a different text encoding process with two encoders
+            return self._encode_prompt_sdxl(prompt, device, do_classifier_free_guidance, negative_prompt)
+        else:
+            # Standard SD models
+            return self._encode_prompt_sd(prompt, device, do_classifier_free_guidance, negative_prompt)
+            
+    @torch.no_grad()
+    def _encode_prompt_sd(self,
+                      prompt,
+                      device,
+                      do_classifier_free_guidance,
+                      negative_prompt=None):
         # text conditional embed
         text_inputs = self.tokenizer(
             prompt,
@@ -94,6 +110,102 @@ class DiffusionPipeline(torch.nn.Module):
             return concat_prompt_embeds, negative_prompt_embeds, prompt_embeds
 
         return prompt_embeds, None, None
+        
+    @torch.no_grad()
+    def _encode_prompt_sdxl(self,
+                      prompt,
+                      device,
+                      do_classifier_free_guidance,
+                      negative_prompt=None):
+        # SDXL has 2 text encoders
+        tokenizer = self.sd_pipeline.tokenizer
+        tokenizer_2 = self.sd_pipeline.tokenizer_2
+        text_encoder = self.sd_pipeline.text_encoder
+        text_encoder_2 = self.sd_pipeline.text_encoder_2
+
+        # Standard width and height for SDXL
+        height = 1024
+        width = 1024
+        
+        # Get prompt text embeddings
+        text_inputs = tokenizer(
+            prompt,
+            padding="max_length",
+            max_length=tokenizer.model_max_length,
+            truncation=True,
+            return_tensors="pt",
+        )
+        text_input_ids = text_inputs.input_ids.to(device)
+        prompt_embeds = text_encoder(text_input_ids)[0]
+
+        # Get prompt text embeddings from second text encoder
+        text_inputs_2 = tokenizer_2(
+            prompt,
+            padding="max_length",
+            max_length=tokenizer_2.model_max_length,
+            truncation=True,
+            return_tensors="pt",
+        )
+        text_input_ids_2 = text_inputs_2.input_ids.to(device)
+        prompt_embeds_2 = text_encoder_2(text_input_ids_2)[0]
+        
+        # Concatenate the embeddings
+        prompt_embeds = torch.concat([prompt_embeds, prompt_embeds_2], dim=-1)
+        
+        # Apply classifier-free guidance if needed
+        if do_classifier_free_guidance:
+            if negative_prompt is None:
+                negative_prompt = [""]
+            elif isinstance(negative_prompt, str):
+                negative_prompt = [negative_prompt]
+                
+            # Get negative prompt embeddings for classifier-free guidance
+            uncond_tokens = negative_prompt
+            uncond_input = tokenizer(
+                uncond_tokens,
+                padding="max_length",
+                max_length=tokenizer.model_max_length,
+                truncation=True,
+                return_tensors="pt",
+            )
+            uncond_input_ids = uncond_input.input_ids.to(device)
+            negative_prompt_embeds = text_encoder(uncond_input_ids)[0]
+            
+            # Do the same for the second text encoder
+            uncond_input_2 = tokenizer_2(
+                uncond_tokens,
+                padding="max_length",
+                max_length=tokenizer_2.model_max_length,
+                truncation=True,
+                return_tensors="pt",
+            )
+            uncond_input_ids_2 = uncond_input_2.input_ids.to(device)
+            negative_prompt_embeds_2 = text_encoder_2(uncond_input_ids_2)[0]
+            
+            # Concatenate the embeddings
+            negative_prompt_embeds = torch.concat([negative_prompt_embeds, negative_prompt_embeds_2], dim=-1)
+            
+            # Concatenate the negative and positive embeddings for classifier-free guidance
+            prompt_embeds = torch.cat([negative_prompt_embeds, prompt_embeds])
+            
+        # Set the time ids
+        time_ids = self._get_time_ids(height, width, device)
+        
+        return prompt_embeds, negative_prompt_embeds, prompt_embeds
+        
+    def _get_time_ids(self, height, width, device):
+        # Time ids for SDXL
+        # Original aspect ratio for SDXL is 1024x1024 (1.0)
+        # Adjust these if needed for your specific use case
+        original_size = (1024, 1024)
+        target_size = (height, width)
+        crops_coords_top_left = (0, 0)
+        
+        add_time_ids = torch.tensor([
+            list(original_size) + list(crops_coords_top_left) + list(target_size)
+        ]).to(device)
+        
+        return add_time_ids
 
     def register_attention_control(self, controller):
         attn_procs = {}
@@ -258,6 +370,17 @@ class DiffusionPipeline(torch.nn.Module):
             negative_prompt,
         )
 
+        # Check if we're using SDXL
+        is_sdxl = hasattr(self.sd_pipeline, "text_encoder_2") and self.sd_pipeline.text_encoder_2 is not None
+        
+        # For SDXL, prepare the additional conditioning
+        added_cond_kwargs = None
+        if is_sdxl:
+            time_ids = self._get_time_ids(height, width, self.device)
+            if do_classifier_free_guidance:
+                time_ids = torch.cat([time_ids] * 2)
+            added_cond_kwargs = {"time_ids": time_ids}
+
         # 4. Prepare timesteps
         scheduler.set_timesteps(num_inference_steps, device=self.device)
         timesteps = scheduler.timesteps
@@ -293,6 +416,7 @@ class DiffusionPipeline(torch.nn.Module):
                     t,
                     encoder_hidden_states=prompt_embeds,
                     cross_attention_kwargs=cross_attention_kwargs,
+                    added_cond_kwargs=added_cond_kwargs,
                     return_dict=False,
                 )[0]
 

@@ -74,7 +74,20 @@ def init_StableDiffusion_pipeline(model_id: AnyStr,
     """
 
     # get model id
+    original_model_id = model_id
     model_id = DiffusersModels.get(model_id, model_id)
+    
+    # Check if this is SDXL
+    is_sdxl = original_model_id == "sdxl" or "xl" in model_id.lower()
+    
+    if is_sdxl:
+        print(f"Loading SDXL model: {model_id}")
+        # SDXL requires a different pipeline import
+        from diffusers import StableDiffusionXLPipeline
+        
+        # For SDXL we need to use StableDiffusionXLPipeline
+        if isinstance(custom_pipeline, StableDiffusionPipeline):
+            custom_pipeline = StableDiffusionXLPipeline
 
     # process diffusion model
     if custom_scheduler is not None:

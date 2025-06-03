@@ -1,4 +1,4 @@
-image_size: 600 # canvas size
+image_size: 256 # canvas size
 path_svg: ~  # if you want to load a svg file and train from it
 color_init: 'rand' # if skip_live=True, then use color_init to init target_img
 style: "iconography" # "iconography", "pixelart", "low-poly", "painting", "sketch", "ink"
@@ -8,10 +8,10 @@ sive_model_cfg:
   model_id: "sd21b" # sd14, sd15, sd21, sd21b, sdxl
   ldm_speed_up: False
   enable_xformers: True
-  gradient_checkpoint: False
+  gradient_checkpoint: True
   cpu_offload: True
   num_inference_steps: 100
-  guidance_scale: 7.5 # sdxl default 5.0
+  guidance_scale: 5 # sdxl default 5.0
   lora_path: ~
 
 # lr and optim
@@ -56,7 +56,7 @@ sive:
     optim_bg: False # train background
     use_attn_init: True
     softmax_tau: 0.3 # temperature of softmax
-    # loss
+    # loss 
     use_distance_weighted_loss: False
     xing_loss_weight: 0.001
   fg:
@@ -122,7 +122,7 @@ vpsd_model_cfg:
   model_id: "sd21b" # sd14, sd15, sd21, sd21b, sdxl
   ldm_speed_up: False
   enable_xformers: True
-  gradient_checkpoint: False
+  gradient_checkpoint: True
   cpu_offload: True
   num_inference_steps: 100
   guidance_scale: 7.5 # sdxl default 5.0
@@ -135,7 +135,7 @@ vpsd:
   n_particle: 6 # 4, 8, 16
   vsd_n_particle: 4 # the batch size of particles
   particle_aug: False # do data enhancement for the input particles
-  num_iter: 2000 # total iterations
+  num_iter: 500 # total iterations
   guidance_scale: 7.5 # CFG value
   grad_scale: 1.0 # increase or decrease the gradient
   grad_clip_val: ~ # eg: 10, clip the gradient of VPSD

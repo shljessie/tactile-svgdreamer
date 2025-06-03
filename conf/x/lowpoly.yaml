@@ -1,5 +1,5 @@
 image_size: 600 # canvas size
-path_svg: ~  # if you want to load a svg file and train from it
+path_svg: ~ # if you want to load a svg file and train from it
 color_init: 'rand' # if skip_live=True, then use color_init to init target_img
 style: "low-poly" # "iconography", "pixelart", "low-poly", "painting", "sketch", "ink"
 

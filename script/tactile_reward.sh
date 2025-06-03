@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -e
+
+# jump back to repo root (where svgdreamer.py lives)
+cd "$(dirname "$0")"/..
+
+python svgdreamer.py \
+  x=tactile_reward \
+  skip_sive=False \
+  "prompt='A black-and-white butterfly contour outline line graphic like a coloring book, created by tracing the outlines. The lines should be continuous, and uniform in width. There should be no background and no extraneous detail. Patterns on the wings should only emphasize key details.'" \
+  "neg_prompt='text, extra, missing, unfinished, watermark, signature, username, scan, frame, complex, detailed, color,intricate'" \
+  result_path=./logs/tactile_reward_point_7 \
+  seed=262 \
+  multirun=False \
+  diffuser.download=True

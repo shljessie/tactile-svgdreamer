@@ -178,7 +178,7 @@ class CompPainter:
                     self.shape_groups.append(path_group)
                     self.cur_shape_groups.append(path_group)
 
-            elif self.style in ['sketch', 'ink']:
+            elif self.style in ['sketch', 'ink', 'tactile']:
                 path = self.get_path()
                 self.shapes.append(path)
                 self.cur_shapes.append(path)
@@ -270,7 +270,7 @@ class CompPainter:
                                  points=points,
                                  stroke_width=torch.tensor(0.0),
                                  is_closed=True)
-        elif self.style in ['sketch', 'painting', 'ink']:
+        elif self.style in ['sketch', 'painting', 'ink', 'tactile']:
             num_control_points = torch.zeros(num_segments, dtype=torch.long) + 2
             points = []
 
@@ -544,6 +544,10 @@ class CompPainterOptimizer:
                                                        self.num_iter, schedule_cfg.decay_ratio)
         if style == 'painting':
             self.optim_point, self.optim_color, self.optim_width = True, True, True
+            self.point_lr_lambda = LinearDecayLRLambda(self.lr_config.point, schedule_cfg.keep_ratio,
+                                                       self.num_iter, schedule_cfg.decay_ratio)
+        if style == 'tactile':
+            self.optim_point, self.optim_color, self.optim_width = True, False, True
             self.point_lr_lambda = LinearDecayLRLambda(self.lr_config.point, schedule_cfg.keep_ratio,
                                                        self.num_iter, schedule_cfg.decay_ratio)
 
