@@ -4,10 +4,6 @@ This repository demonstrates a lightweight, end-to-end pipeline for generating t
 
 ---
 
-# Tactile SVG Optimization with Diffusion and RL
-
-This repository demonstrates a lightweight, end-to-end pipeline for generating tactile-optimized SVGs from text prompts using a two-stage vectorization model (SIVE + VPSD) with reinforcement-style reward shaping. It is designed for generating Text2SVG Tactile Graphics for blind and low-vision educators/learners.
-
 ## 🧩 Overview
 
 This project builds on the [SVGDreamer](https://github.com/) pipeline and introduces:
